@@ -1,0 +1,40 @@
+CC = g++
+CXXFLAGS = -std=c++17 -g -Wall -I. -Isrc/app/encryptDecrypt -Isrc/app/fileHandling -Isrc/app/processes
+BUILD_DIR = build
+$(BUILD_DIR):
+    mkdir -p $(BUILD_DIR)
+MAIN_TARGET = encrypt_decrypt
+CRYPTION_TARGET = cryption
+
+MAIN_SRC = src/app/main.cpp \
+          src/app/processes/ProcessManagement.cpp \
+          src/app/fileHandling/IO.cpp \
+          src/app/fileHandling/ReadEnv.cpp \
+          src/app/encryptDecrypt/Cryption.cpp
+
+CRYPTION_SRC = src/app/encryptDecrypt/CryptionMain.cpp \
+              src/app/encryptDecrypt/Cryption.cpp \
+              src/app/fileHandling/IO.cpp \
+              src/app/fileHandling/ReadEnv.cpp
+
+MAIN_OBJ = $(MAIN_SRC:.cpp=.o)
+CRYPTION_OBJ = $(CRYPTION_SRC:.cpp=.o)
+
+all: $(BUILD_DIR)/$(MAIN_TARGET) $(BUILD_DIR)/$(CRYPTION_TARGET)
+
+$(BUILD_DIR)/$(MAIN_TARGET): $(MAIN_OBJ)
+    @mkdir -p $(BUILD_DIR)
+    $(CC) $(LDFLAGS) -o $@ $^
+
+$(BUILD_DIR)/$(CRYPTION_TARGET): $(CRYPTION_OBJ)
+    @mkdir -p $(BUILD_DIR)
+    $(CC) $(LDFLAGS) -o $@ $^
+
+$(BUILD_DIR)/%.o: src/app/%.cpp
+    @mkdir -p $(BUILD_DIR)
+    $(CC) $(CXXFLAGS) -c -o $@ $
+
+clean:
+    rm -rf $(BUILD_DIR)
+
+.PHONY: all clean
